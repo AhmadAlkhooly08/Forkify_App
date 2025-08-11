@@ -1,7 +1,9 @@
+// import icons from '../img/icons.svg' //! Parcel 1
+import icons from 'url:../img/icons.svg' //^ Parcel 2
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 const recipeContainer = document.querySelector('.recipe');
-// const searchedValue = document.querySelector('.search');
-// const searchedResults = document.querySelector('.search-results');
-// const everySingleRecipe = document.querySelector('.preview');
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -13,10 +15,27 @@ const timeout = function (s) {
 
 ///////////////////////////////////////
 
+const renderSpinner = function(ParentEl){
+  const markup =
+  `
+    <div class="spinner">
+      <svg>
+        <use href="${icons}#icon-loader"></use>
+      </svg>
+    </div>
+  `;
+  ParentEl.innerHTML = '';
+  ParentEl.insertAdjacentHTML("afterbegin",markup)
+}
 
 const showRecipe = async function(){
   try{
-    const res = await fetch('https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc886');
+    const id = window.location.hash.slice(1);
+
+    if(!id) return;
+    // Loading recipe
+    renderSpinner(recipeContainer);
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
     const data = await res.json();
 
     if(!res.ok) throw new Error(`${data.message} (${res.status})`)
@@ -32,12 +51,30 @@ const showRecipe = async function(){
       ingredients: recipe.ingredients,
       servings: recipe.servings,
     } 
-    console.log(recipe);
+
+
 
     // Rendring Recipe
+
+    const renderIngredients = recipe.ingredients.map(eng=>{
+      return`
+             <li class="recipe__ingredient">
+              <svg class="recipe__icon">
+                <use href="${icons}#icon-check"></use>
+              </svg>
+              <div class="recipe__quantity">${eng.quantity ?? ''}</div>
+              <div class="recipe__description">
+                <span class="recipe__unit">${eng.unit ?? ''}</span>
+                ${eng.description ?? ''}
+              </div>
+            </li>
+
+       `
+    }).join('')
+
     let html = `
       <figure class="recipe__fig">
-          <img src="${recipe.img}" alt="" class="recipe__img" />
+          <img src="${recipe.img}" alt="${recipe.title}" class="recipe__img" />
           <h1 class="recipe__title">
             <span>${recipe.title}</span>
           </h1>
@@ -46,27 +83,27 @@ const showRecipe = async function(){
         <div class="recipe__details">
           <div class="recipe__info">
             <svg class="recipe__info-icon">
-              <use href="src/img/icons.svg#icon-clock"></use>
+              <use href="${icons}#icon-clock"></use>
             </svg>
             <span class="recipe__info-data recipe__info-data--minutes">${recipe.cookingTimes}</span>
             <span class="recipe__info-text">minutes</span>
           </div>
           <div class="recipe__info">
             <svg class="recipe__info-icon">
-              <use href="src/img/icons.svg#icon-users"></use>
+              <use href="${icons}#icon-users"></use>
             </svg>
-            <span class="recipe__info-data recipe__info-data--people">4</span>
+            <span class="recipe__info-data recipe__info-data--people">${recipe.servings}</span>
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
               <button class="btn--tiny btn--increase-servings">
                 <svg>
-                  <use href="src/img/icons.svg#icon-minus-circle"></use>
+                  <use href="${icons}#icon-minus-circle"></use>
                 </svg>
               </button>
               <button class="btn--tiny btn--increase-servings">
                 <svg>
-                  <use href="src/img/icons.svg#icon-plus-circle"></use>
+                  <use href="${icons}#icon-plus-circle"></use>
                 </svg>
               </button>
             </div>
@@ -74,12 +111,12 @@ const showRecipe = async function(){
 
           <div class="recipe__user-generated">
             <svg>
-              <use href="src/img/icons.svg#icon-user"></use>
+              <use href="${icons}#icon-user"></use>
             </svg>
           </div>
           <button class="btn--round">
             <svg class="">
-              <use href="src/img/icons.svg#icon-bookmark-fill"></use>
+              <use href="${icons}#icon-bookmark-fill"></use>
             </svg>
           </button>
         </div>
@@ -87,87 +124,7 @@ const showRecipe = async function(){
         <div class="recipe__ingredients">
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[0].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[0].unit}</span>
-                ${recipe.ingredients[0].description}
-              </div>
-            </li>
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[1].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[1].unit}</span>
-                ${recipe.ingredients[1].description}
-              </div>
-            </li>
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[2].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[2].unit}</span>
-                ${recipe.ingredients[2].description}
-              </div>
-            </li>
-
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[3].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[3].unit}</span>
-                ${recipe.ingredients[3].description}
-              </div>
-            </li>
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[4].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[4].unit}</span>
-                ${recipe.ingredients[4].description}
-              </div>
-            </li>
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[5].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[5].unit}</span>
-                ${recipe.ingredients[5].description}
-              </div>
-            </li>
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[6].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[6].unit}</span>
-                ${recipe.ingredients[6].description}
-              </div>
-            </li>
-            <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="src/img/icons.svg#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${recipe.ingredients[7].quantity}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${recipe.ingredients[7].unit}</span>
-                ${recipe.ingredients[7].description}
-              </div>
-            </li>
+            ${renderIngredients}
           </ul>
         </div>
 
@@ -180,19 +137,25 @@ const showRecipe = async function(){
           </p>
           <a
             class="btn--small recipe__btn"
-            href="${recipe.sourceurl}"
+            href="${recipe.sourceUrl}"
             target="_blank"
           >
             <span>Directions</span>
             <svg class="search__icon">
-              <use href="src/img/icons.svg#icon-arrow-right"></use>
+              <use href="${icons}#icon-arrow-right"></use>
             </svg>
           </a>
         </div>
     `;
+    recipeContainer.innerHTML = '';
     recipeContainer.insertAdjacentHTML("afterbegin",html);
+
   } catch(err){
     alert(err)
+
   }
 }
-showRecipe();
+
+// ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
+window.addEventListener('hashchange',showRecipe)
+window.addEventListener('load',showRecipe)
