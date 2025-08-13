@@ -1,3 +1,5 @@
+import * as model from './model.js';
+
 // import icons from '../img/icons.svg' //! Parcel 1
 import icons from 'url:../img/icons.svg' //^ Parcel 2
 import 'core-js/stable';
@@ -33,27 +35,11 @@ const showRecipe = async function(){
     const id = window.location.hash.slice(1);
 
     if(!id) return;
-    // Loading recipe
     renderSpinner(recipeContainer);
-    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
-    const data = await res.json();
-
-    if(!res.ok) throw new Error(`${data.message} (${res.status})`)
-    
-    let {recipe} = data.data;
-    recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      img: recipe.image_url,
-      cookingTimes: recipe.cooking_time,
-      ingredients: recipe.ingredients,
-      servings: recipe.servings,
-    } 
-
-
-
+    // Loading recipe
+    await model.loadRecipe(id) //!From model.js
+    const {recipe} = model.state;
+    console.log(recipe);
     // Rendring Recipe
 
     const renderIngredients = recipe.ingredients.map(eng=>{

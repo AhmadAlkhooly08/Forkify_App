@@ -1,0 +1,33 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.state = exports.loadRecipe = void 0;
+var _regeneratorRuntime = require("regenerator-runtime");
+const state = exports.state = {
+  recipe: {}
+};
+const loadRecipe = async function (id) {
+  try {
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+    const {
+      recipe
+    } = data.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      img: recipe.image_url,
+      cookingTimes: recipe.cooking_time,
+      ingredients: recipe.ingredients,
+      servings: recipe.servings
+    };
+  } catch (err) {
+    alert;
+  }
+};
+exports.loadRecipe = loadRecipe;
