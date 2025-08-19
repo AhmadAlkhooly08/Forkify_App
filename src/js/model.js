@@ -25,7 +25,7 @@ export const loadRecipe = async function(id){
         } 
     
     } catch(err){
-        alert(`couldnt fetch data ${err}`)
+        alert(`couldnt fetch data ${err}`);
     }
 
 }
