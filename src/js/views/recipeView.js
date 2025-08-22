@@ -1,6 +1,6 @@
 import icons from 'url:../../img/icons.svg'
 import Fraction from 'fraction.js';
-class RecipeView{
+class recipeView{
     #parentEl = document.querySelector('.recipe');
     #data;
     render(data){
@@ -29,6 +29,10 @@ class RecipeView{
         
     }
 
+    addHanlerRender(handler){
+        window.addEventListener('hashchange',handler)
+        window.addEventListener('load',handler)
+    }
     #generateMarkup(){
 
         return` 
@@ -125,5 +129,5 @@ class RecipeView{
     }
 }
 
-export default new RecipeView();
+export default new recipeView();
 
