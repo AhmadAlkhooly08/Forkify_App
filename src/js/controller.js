@@ -28,7 +28,7 @@ const showRecipe = async function(){
 
   } catch(err){
     alert(err)
-
+    recipeView.generateErorr();
   }
 }
 
