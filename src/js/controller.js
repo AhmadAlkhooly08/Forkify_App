@@ -1,5 +1,6 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
+import * as confing from './confing.js'
 
 // import icons from '../img/icons.svg' //! Parcel 1
 import icons from 'url:../img/icons.svg' //^ Parcel 2
@@ -28,10 +29,18 @@ const showRecipe = async function(){
 
   } catch(err){
     alert(err)
-    recipeView.generateErorr();
+    recipeView.renderErorr();
   }
 }
 
+const renderSearchedResults = async function(){
+  try{
+    const query = model.loadSearchedResults(recipeView.searchedValue());
+    console.log(query);
+  }catch(err){
+
+  }
+}
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
 const init = function(){
   recipeView.addHanlerRender(showRecipe);

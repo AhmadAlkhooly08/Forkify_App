@@ -1,14 +1,16 @@
 import icons from 'url:../../img/icons.svg'
 import Fraction from 'fraction.js';
+import * as confing from '../confing.js'
 class recipeView{
     #parentEl = document.querySelector('.recipe');
     #data;
+    #ErrorMessage = 'No recipes found for your query. Please try again!';
+    #message = '';
     render(data){
         this.#data = data;
         const markup = this.#generateMarkup();
         this.#clear();
         this.#parentEl.insertAdjacentHTML("afterbegin",markup);
-
     }
 
     #clear(){
@@ -32,6 +34,15 @@ class recipeView{
     addHanlerRender(handler){
         window.addEventListener('hashchange',handler)
         window.addEventListener('load',handler)
+    }
+    searchedValue(){
+        confing.SearchedValue.addEventListener('submit',function(e){
+            e.preventDefault();
+            const input = e.target.querySelector('input')
+            return input.value
+            input.value = '';
+        })
+
     }
     #generateMarkup(){
 
@@ -128,18 +139,32 @@ class recipeView{
         `
     }
 
-    generateErorr(){
-        this.#parentEl.innerHTML = '';
+    renderErorr(message = this.#ErrorMessage){
         const markup = `
             <div class="error">
                 <div>
                     <svg>
-                    <use href="src/img/icons.svg#icon-alert-triangle"></use>
+                    <use href="${icons}#icon-alert-triangle"></use>
                     </svg>
                 </div>
-                <p>No recipes found for your query. Please try again!</p>
+                <p>${message}</p>
           </div>
         `;
+        this.#clear();
+        this.#parentEl.insertAdjacentHTML('afterbegin',markup)
+    }
+    renderMessage(message = this.#message){
+        const markup = `
+            <div class="message">
+                <div>
+                    <svg>
+                    <use href="${icons}#icon-smile"></use>
+                    </svg>
+                </div>
+                <p>${message}</p>
+          </div>
+        `;
+        this.#clear();
         this.#parentEl.insertAdjacentHTML('afterbegin',markup)
     }
 }

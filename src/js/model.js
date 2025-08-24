@@ -3,6 +3,7 @@ import * as config from './confing.js';
 import {getJson} from './helpers.js'
 export const state ={
     recipe:{},
+    results:{},
 }
 
 export const loadRecipe = async function(id){
@@ -24,6 +25,19 @@ export const loadRecipe = async function(id){
     
     } catch(err){
         console.log(`${err} 💥💥💥💥`);
+        throw err;
     }
 
+}
+
+export const loadSearchedResults = async function(query){
+    try{
+        const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes?search=${config.SearchedValue.value}`);
+        const data = await res.json();
+        console.log(data);
+
+    }catch(err){
+        console.log(`${err} 💥💥💥💥`);
+        throw err;
+    }
 }
