@@ -35,15 +35,6 @@ class recipeView{
         window.addEventListener('hashchange',handler)
         window.addEventListener('load',handler)
     }
-    searchedValue(){
-        confing.SearchedValue.addEventListener('submit',function(e){
-            e.preventDefault();
-            const input = e.target.querySelector('input')
-            return input.value
-            input.value = '';
-        })
-
-    }
     #generateMarkup(){
 
         return` 

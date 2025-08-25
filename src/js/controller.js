@@ -1,5 +1,6 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
+import SearchedRecipe from './views/searchedView.js';
 import * as confing from './confing.js'
 
 // import icons from '../img/icons.svg' //! Parcel 1
@@ -33,16 +34,30 @@ const showRecipe = async function(){
   }
 }
 
-const renderSearchedResults = async function(){
-  try{
-    const query = model.loadSearchedResults(recipeView.searchedValue());
-    console.log(query);
-  }catch(err){
 
+const controlSearchResults = async function(){
+  try{
+    const query = SearchedRecipe.getQuery();
+
+    if(!query) return;
+
+    // Loading results
+    SearchedRecipe.renderSpiner();
+
+    await model.loadSearchedResults(query);
+
+    // rendering results
+    const {results} = model.state.search;
+    SearchedRecipe.render(results)
+
+  }catch(err){
+    console.log(err);
   }
 }
+
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
 const init = function(){
   recipeView.addHanlerRender(showRecipe);
+  SearchedRecipe.addHandlerSearch(controlSearchResults);
 }
 init();
