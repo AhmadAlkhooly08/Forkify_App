@@ -1,6 +1,7 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import SearchedRecipe from './views/searchedView.js';
+import resultsView from './views/resultsView.js'
 import * as confing from './confing.js'
 
 // import icons from '../img/icons.svg' //! Parcel 1
@@ -42,16 +43,17 @@ const controlSearchResults = async function(){
     if(!query) return;
 
     // Loading results
-    SearchedRecipe.renderSpiner();
+    resultsView.renderSpiner();
 
     await model.loadSearchedResults(query);
 
     // rendering results
     const {results} = model.state.search;
-    SearchedRecipe.render(results)
+    resultsView.render(results)
 
   }catch(err){
     console.log(err);
+    resultsView.renderErorr();
   }
 }
 
