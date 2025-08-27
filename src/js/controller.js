@@ -2,6 +2,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import SearchedRecipe from './views/searchedView.js';
 import resultsView from './views/resultsView.js'
+import paginationView from './views/paginationView.js'
 import * as confing from './confing.js'
 
 // import icons from '../img/icons.svg' //! Parcel 1
@@ -9,11 +10,9 @@ import icons from 'url:../img/icons.svg' //^ Parcel 2
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-const recipeContainer = document.querySelector('.recipe');
-// https://forkify-api.herokuapp.com/v2
-
-///////////////////////////////////////
-
+// if(module.hot){
+//   module.hot.accept();
+// }
 
 const showRecipe = async function(){
   try{
@@ -49,11 +48,13 @@ const controlSearchResults = async function(){
 
     // rendering results
     const {results} = model.state.search;
-    resultsView.render(results)
+    // resultsView.render(results)
+    resultsView.render(model.getSearchResultsPage(3))
 
+    // render initial pagination
+    paginationView.render(model.state.search)
   }catch(err){
     console.log(err);
-    resultsView.renderErorr();
   }
 }
 
