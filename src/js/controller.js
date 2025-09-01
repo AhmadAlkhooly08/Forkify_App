@@ -2,7 +2,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import SearchedRecipe from './views/searchedView.js';
 import resultsView from './views/resultsView.js'
-import paginationView from './views/paginationView.js'
+import paginationView from './views/paginationView.js';
 import * as confing from './confing.js'
 
 // import icons from '../img/icons.svg' //! Parcel 1
@@ -47,9 +47,8 @@ const controlSearchResults = async function(){
     await model.loadSearchedResults(query);
 
     // rendering results
-    const {results} = model.state.search;
-    // resultsView.render(results)
-    resultsView.render(model.getSearchResultsPage(4))
+
+    resultsView.render(model.getSearchResultsPage())
 
     // render initial pagination
     paginationView.render(model.state.search)
@@ -58,9 +57,26 @@ const controlSearchResults = async function(){
   }
 }
 
+const paginationController = function(goToPage){
+  // render new results
+  resultsView.render(model.getSearchResultsPage(goToPage))
+
+  // render new pagination buttons
+  paginationView.render(model.state.search)
+}
+
+const controllerServings = function(newServings){
+  // update the recipe servings in state
+    model.updateServings(newServings)
+  // update recipe view
+  recipeView.render(model.state.recipe)
+}
+
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
 const init = function(){
   recipeView.addHanlerRender(showRecipe);
   SearchedRecipe.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerClick(paginationController);
+  recipeView.addHandlerServings(controllerServings)
 }
 init();

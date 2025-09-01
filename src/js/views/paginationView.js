@@ -5,9 +5,13 @@ class paginationView extends View{
     _parentEl = document.querySelector('.pagination');
 
     addHandlerClick(handler){
-        const prevBtn = this._parentEl.querySelector('.pagination__btn--prev');
-        prevBtn.addEventListener('click',function(e){
+        this._parentEl.addEventListener('click',function(e){
+            const btn = e.target.closest('.btn--inline');
             
+            if(!btn) return;
+            const goToPage = +btn.dataset.goto;
+
+            handler(goToPage);
         })
     }
 
@@ -38,7 +42,7 @@ class paginationView extends View{
     }
     nextBtn(curPage){
         return`
-            <button class="btn--inline pagination__btn--next">
+            <button data-goto="${curPage + 1}" class="btn--inline pagination__btn--next">
                 <span>Page ${curPage + 1}</span>
                 <svg class="search__icon">
                     <use href="${icons}#icon-arrow-right"></use>
@@ -50,7 +54,7 @@ class paginationView extends View{
 
     prevBtn(curPage){
         return `
-            <button class="btn--inline pagination__btn--prev">
+            <button data-goto="${curPage-1}" class="btn--inline pagination__btn--prev">
                 <svg class="search__icon">
                 <use href="${icons}#icon-arrow-left"></use>
                 </svg>
