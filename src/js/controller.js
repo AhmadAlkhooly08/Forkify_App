@@ -19,6 +19,10 @@ const showRecipe = async function(){
     const id = window.location.hash.slice(1);
 
     if(!id) return;
+
+    // updating results view to active
+    resultsView.update(model.getSearchResultsPage());
+
     // Loading recipe
     recipeView.renderSpiner();
 
@@ -69,7 +73,8 @@ const controllerServings = function(newServings){
   // update the recipe servings in state
     model.updateServings(newServings)
   // update recipe view
-  recipeView.render(model.state.recipe)
+  // recipeView.render(model.state.recipe)
+  recipeView.update(model.state.recipe)
 }
 
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
