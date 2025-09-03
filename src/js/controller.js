@@ -3,6 +3,7 @@ import recipeView from './views/recipeView.js';
 import SearchedRecipe from './views/searchedView.js';
 import resultsView from './views/resultsView.js'
 import paginationView from './views/paginationView.js';
+import BookMarkView from './views/BookMarkView.js';
 import * as confing from './confing.js'
 
 // import icons from '../img/icons.svg' //! Parcel 1
@@ -22,6 +23,7 @@ const showRecipe = async function(){
 
     // updating results view to active
     resultsView.update(model.getSearchResultsPage());
+
 
     // Loading recipe
     recipeView.renderSpiner();
@@ -52,10 +54,11 @@ const controlSearchResults = async function(){
 
     // rendering results
 
-    resultsView.render(model.getSearchResultsPage())
+    resultsView.render(model.getSearchResultsPage(1))
 
     // render initial pagination
-    paginationView.render(model.state.search)
+    paginationView.render(model.state.search);
+
   }catch(err){
     console.log(err);
   }
@@ -77,11 +80,22 @@ const controllerServings = function(newServings){
   recipeView.update(model.state.recipe)
 }
 
+const controlBookMarks = async function(id){
+  try{
+    await model.setBookMarks(id);
+
+    BookMarkView.render(model.state.BookMark)
+  } catch(err){
+    console.log(err);
+  }
+}
+
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
 const init = function(){
   recipeView.addHanlerRender(showRecipe);
   SearchedRecipe.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(paginationController);
   recipeView.addHandlerServings(controllerServings)
+  recipeView.addHandlerBookMark(controlBookMarks)
 }
 init();

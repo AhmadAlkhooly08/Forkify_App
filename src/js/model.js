@@ -10,6 +10,7 @@ export const state ={
         page: 1,
         resultsPerPage: config.RES_PER_PA,
     },
+    BookMark:[],
 }
 
 export const loadRecipe = async function(id){
@@ -69,4 +70,24 @@ export const updateServings = function(newServings){
         ing.quantity = ing.quantity * (newServings / state.recipe.servings);
     })
     state.recipe.servings = newServings;
+}
+
+export const setBookMarks = async function(id){
+    try{
+        const data = await getJson(`${config.API_URL}${id}`);
+
+        const {recipe} = data.data;
+        const bookmark = {
+            id: recipe.id,
+            title: recipe.title, 
+            publisher: recipe.publisher,
+            img: recipe.image_url, 
+        }
+
+        const exists = state.BookMark.some(data => data.id === bookmark.id)
+        if(!exists) state.BookMark.push(bookmark)
+        console.log(state.BookMark);    
+    } catch(err){
+        console.log(err);
+    }
 }

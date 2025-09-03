@@ -20,6 +20,16 @@ class recipeView extends View{
             if(+updateTo > 0) handler(+updateTo);
         })
     }
+
+    addHandlerBookMark(handler){
+        this._parentEl.addEventListener('click',function(e){
+            const btnBook = e.target.closest('.btn--round');
+            if(!btnBook) return;
+
+            const id = window.location.hash.slice(1);
+            handler(id);
+        })
+    }
     _generateMarkup(){
 
         return` 
