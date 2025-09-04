@@ -80,22 +80,18 @@ const controllerServings = function(newServings){
   recipeView.update(model.state.recipe)
 }
 
-const controlBookMarks = async function(id){
-  try{
-    await model.setBookMarks(id);
-
-    BookMarkView.render(model.state.BookMark)
-  } catch(err){
-    console.log(err);
-  }
+const controlBookMarks = function(){
+  model.setBookMarks(model.state.recipe);
+  BookMarkView.render(model.state.BookMark);
+  recipeView.update(model.state.recipe);
 }
 
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
 const init = function(){
   recipeView.addHanlerRender(showRecipe);
-  SearchedRecipe.addHandlerSearch(controlSearchResults);
-  paginationView.addHandlerClick(paginationController);
   recipeView.addHandlerServings(controllerServings)
   recipeView.addHandlerBookMark(controlBookMarks)
+  SearchedRecipe.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerClick(paginationController);
 }
 init();

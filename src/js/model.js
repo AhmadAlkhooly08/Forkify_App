@@ -29,6 +29,11 @@ export const loadRecipe = async function(id){
           ingredients: recipe.ingredients,
           servings: recipe.servings,
         } 
+
+        if(state.BookMark.some(bookmark => bookmark.id === id))
+            state.recipe.BookMarked = true;
+        else state.recipe.BookMarked = false;
+
         console.log(state.recipe);
     } catch(err){
         console.log(`${err} 💥💥💥💥`);
@@ -72,22 +77,10 @@ export const updateServings = function(newServings){
     state.recipe.servings = newServings;
 }
 
-export const setBookMarks = async function(id){
-    try{
-        const data = await getJson(`${config.API_URL}${id}`);
+export const setBookMarks = function(recipe){
 
-        const {recipe} = data.data;
-        const bookmark = {
-            id: recipe.id,
-            title: recipe.title, 
-            publisher: recipe.publisher,
-            img: recipe.image_url, 
-        }
+    const check = state.BookMark.some((data,i) => data.id === state.recipe.id);
+    
+    if(!check) state.BookMark.push(recipe);
 
-        const exists = state.BookMark.some(data => data.id === bookmark.id)
-        if(!exists) state.BookMark.push(bookmark)
-        console.log(state.BookMark);    
-    } catch(err){
-        console.log(err);
-    }
 }
