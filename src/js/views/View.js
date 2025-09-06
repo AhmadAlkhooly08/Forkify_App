@@ -2,10 +2,11 @@ import icons from 'url:../../img/icons.svg'
 export default class View{
 
     _data;
-    render(data){
+    render(data,result = true){
         if(!data || (Array.isArray(data)) && data.length === 0) return this.renderErorr();
         this._data = data;
         const markup = this._generateMarkup();
+        if(!result) return markup;
         this._clear();
         this._parentEl.insertAdjacentHTML("afterbegin",markup);
     }

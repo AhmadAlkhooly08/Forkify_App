@@ -23,6 +23,7 @@ const showRecipe = async function(){
 
     // updating results view to active
     resultsView.update(model.getSearchResultsPage());
+    BookMarkView.update(model.state.BookMark);
 
 
     // Loading recipe
@@ -81,7 +82,9 @@ const controllerServings = function(newServings){
 }
 
 const controlBookMarks = function(){
-  model.setBookMarks(model.state.recipe);
+  if(!model.state.recipe.BookMarked) model.setBookMarks(model.state.recipe);
+  else model.deleteBookMark(model.state.recipe.id);
+
   BookMarkView.render(model.state.BookMark);
   recipeView.update(model.state.recipe);
 }
