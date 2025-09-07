@@ -1,6 +1,7 @@
 import { async } from "regenerator-runtime";
 import * as config from './confing.js';
 import {getJson} from './helpers.js'
+import { locale } from "core-js";
 // import { search } from "core-js/fn/symbol";
 export const state ={
     recipe:{},
@@ -77,14 +78,21 @@ export const updateServings = function(newServings){
     state.recipe.servings = newServings;
 }
 
+const persistBookmarks = function(){
+    localStorage.setItem('bookMark',JSON.stringify(state.BookMark))
+}
+
+
 export const setBookMarks = function(recipe){
 
     const check = state.BookMark.some((data,i) => data.id === state.recipe.id);
     
     if(!check) state.BookMark.push(recipe);
 
+
     // set recipe.BookMarked to bookmarked
     if(recipe.id === state.recipe.id) state.recipe.BookMarked = true;
+    persistBookmarks();
 }
 
 export const deleteBookMark = function(id){
@@ -92,5 +100,16 @@ export const deleteBookMark = function(id){
     state.BookMark.splice(index,1); 
 
     // set recipe.BookMarked to not bookmarked
-        if(id === state.recipe.id) state.recipe.BookMarked = false;
+    if(id === state.recipe.id) state.recipe.BookMarked = false;
+        persistBookmarks();
+
 }
+
+
+const init = function(){
+    const storage = localStorage.getItem('bookMark');
+    if(storage) state.BookMark = JSON.parse(storage)
+}
+
+init()
+console.log(state.BookMark);
