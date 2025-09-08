@@ -23,21 +23,22 @@ const showRecipe = async function(){
 
     // updating results view to active
     resultsView.update(model.getSearchResultsPage());
-    BookMarkView.update(model.state.BookMark);
-
-
+    
+    
     // Loading recipe
     recipeView.renderSpiner();
-
+    
     await model.loadRecipe(id) //!From model.js
     const {recipe} = model.state;
-
+    
     // Rendring Recipe
     recipeView.render(recipe);
-
+    
+    // updating bookmarks view
+    BookMarkView.update(model.state.BookMark);
   } catch(err){
-    alert(err)
     recipeView.renderErorr();
+    console.error(err);
   }
 }
 
@@ -89,8 +90,12 @@ const controlBookMarks = function(){
   recipeView.update(model.state.recipe);
 }
 
+const controlBookmark = function(){
+  BookMarkView.render(model.state.BookMark)
+}
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
 const init = function(){
+  BookMarkView.addHandlerrender(controlBookmark)
   recipeView.addHanlerRender(showRecipe);
   recipeView.addHandlerServings(controllerServings)
   recipeView.addHandlerBookMark(controlBookMarks)

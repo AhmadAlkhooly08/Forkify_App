@@ -112,4 +112,7 @@ const init = function(){
 }
 
 init()
-console.log(state.BookMark);
+
+const clearBookMarkStorage = function(){
+    localStorage.clear('bookMark');
+}
