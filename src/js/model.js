@@ -109,3 +109,12 @@ init();
 const clearBookMarkStorage = function () {
   localStorage.clear("bookMark");
 };
+
+
+export const uploadRecipe = async function(data){
+  try{
+    const data = getJson(``);
+  } catch(err){
+    console.log(err);
+  }
+}

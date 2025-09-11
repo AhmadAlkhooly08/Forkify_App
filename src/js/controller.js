@@ -94,7 +94,7 @@ const controlBookmark = function () {
 };
 
 const controlAddRecipe = function(newRecipe){
-  console.log(newRecipe);
+  model.uploadRecipe(newRecipe);
 }
 
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));
