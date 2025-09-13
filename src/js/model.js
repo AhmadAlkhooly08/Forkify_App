@@ -113,6 +113,16 @@ const clearBookMarkStorage = function () {
 
 export const uploadRecipe = async function(data){
   try{
+    const recipeData = {
+      id: id,
+      title: data.title,
+      publisher: data.publisher,
+      sourceUrl: data.source_url,
+      img: data.image_url,
+      cookingTimes: data.cooking_time,
+      ingredients: data.ingredients,
+      servings: data.servings,
+    }
     const data = getJson(``);
   } catch(err){
     console.log(err);
