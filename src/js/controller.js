@@ -93,8 +93,14 @@ const controlBookmark = function () {
   BookMarkView.render(model.state.BookMark);
 };
 
-const controlAddRecipe = function(newRecipe){
-  model.uploadRecipe(newRecipe);
+const controlAddRecipe = async function(newRecipe){
+  try{
+    await model.uploadRecipe(newRecipe);
+
+  }catch(err){
+    console.error(err);
+    AddRecipeView.renderErorr(err.message);
+  }
 }
 
 // ['hashchange','load'].forEach(event => window.addEventListener(event,showRecipe));

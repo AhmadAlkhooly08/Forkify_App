@@ -29,7 +29,7 @@ export const loadRecipe = async function (id) {
       ingredients: recipe.ingredients,
       servings: recipe.servings,
     };
-
+    console.log(state.recipe);
     if (state.BookMark.some((bookmark) => bookmark.id === id))
       state.recipe.BookMarked = true;
     else state.recipe.BookMarked = false;
@@ -110,21 +110,34 @@ const clearBookMarkStorage = function () {
   localStorage.clear("bookMark");
 };
 
+export const uploadRecipe = async function (newRecipe) {
+  try {
+    console.log(newRecipe);
+    const ingredients = Object.entries(newRecipe).filter(
+      (entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
+      .map(ing =>{
+        const ingArr = ing[1].replaceAll(' ','').split(',');
 
-export const uploadRecipe = async function(data){
-  try{
-    const recipeData = {
-      id: id,
-      title: data.title,
-      publisher: data.publisher,
-      sourceUrl: data.source_url,
-      img: data.image_url,
-      cookingTimes: data.cooking_time,
-      ingredients: data.ingredients,
-      servings: data.servings,
+        if(ingArr.length !== 3) throw new Error('Wrong ingrediant Format! Please use the correct format :)');
+
+        const [quantity,unit,description] = ingArr;
+        return {quantity: quantity ? +quantity : null,unit,description};
+      });
+
+    const recipe ={
+      title: newRecipe.title,
+      publisher: newRecipe.publisher,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      cooking_time: +newRecipe.cookingTime,
+      servings: +newRecipe.servings,
+      ingredients,
     }
-    const data = getJson(``);
-  } catch(err){
-    console.log(err);
+
+    console.log(recipe);  
+
+  } catch (err) {
+    throw err
   }
-}
+
+};
