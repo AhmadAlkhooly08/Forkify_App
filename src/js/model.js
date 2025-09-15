@@ -1,7 +1,8 @@
 import { async } from "regenerator-runtime";
 import * as config from "./confing.js";
-import { getJson } from "./helpers.js";
+import { getJson , sendJson} from "./helpers.js";
 import { locale } from "core-js";
+import BookMarkView from "./views/BookMarkView.js";
 // import { search } from "core-js/fn/symbol";
 export const state = {
   recipe: {},
@@ -14,13 +15,10 @@ export const state = {
   BookMark: [],
 };
 
-export const loadRecipe = async function (id) {
-  try {
-    const data = await getJson(`${config.API_URL}${id}`);
-
+const UpdateRecipe = function(data){
     const { recipe } = data.data;
-    state.recipe = {
-      id: id,
+    return{
+      id: recipe.id,
       title: recipe.title,
       publisher: recipe.publisher,
       sourceUrl: recipe.source_url,
@@ -28,8 +26,15 @@ export const loadRecipe = async function (id) {
       cookingTimes: recipe.cooking_time,
       ingredients: recipe.ingredients,
       servings: recipe.servings,
+      ...(recipe.key && {key: recipe.key})
     };
-    console.log(state.recipe);
+}
+export const loadRecipe = async function (id) {
+  try {
+    const data = await getJson(`${config.API_URL}${id}`);
+
+    state.recipe = UpdateRecipe(data);
+
     if (state.BookMark.some((bookmark) => bookmark.id === id))
       state.recipe.BookMarked = true;
     else state.recipe.BookMarked = false;
@@ -112,7 +117,6 @@ const clearBookMarkStorage = function () {
 
 export const uploadRecipe = async function (newRecipe) {
   try {
-    console.log(newRecipe);
     const ingredients = Object.entries(newRecipe).filter(
       (entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
       .map(ing =>{
@@ -134,8 +138,12 @@ export const uploadRecipe = async function (newRecipe) {
       ingredients,
     }
 
-    console.log(recipe);  
+    const recipeData = await sendJson(`${config.API_URL}?key=${config.KEY}`,recipe);
 
+    state.recipe = UpdateRecipe(recipeData); 
+    console.log(state.recipe);
+
+    setBookMarks(state.recipe);
   } catch (err) {
     throw err
   }

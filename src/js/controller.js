@@ -95,7 +95,22 @@ const controlBookmark = function () {
 
 const controlAddRecipe = async function(newRecipe){
   try{
+
+    // 𝗹𝗼𝗮𝗱 𝘀𝗽𝗶𝗻𝗻𝗲𝗿 𝗺𝗲𝘁𝗵𝗼𝗱
+    AddRecipeView.renderSpiner();
+
     await model.uploadRecipe(newRecipe);
+
+    // ‍‍‍𝙧𝙚𝙣𝙙𝙚𝙧 𝙣𝙚𝙬 𝙧𝙚𝙘𝙞𝙥𝙚
+    recipeView.render(model.state.recipe);
+
+    // Add Success message
+    AddRecipeView.renderMessage(`${model.state.recipe.title} named Recipe was successfuly created 😊`);
+
+    // close form window
+    setTimeout(function(){
+      AddRecipeView.ToggleWindow();
+    }, confing.CLOSE_MODAL_SEC * 1000);
 
   }catch(err){
     console.error(err);
