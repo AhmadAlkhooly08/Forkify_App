@@ -103,9 +103,13 @@ const controlAddRecipe = async function(newRecipe){
 
     // ‍‍‍𝙧𝙚𝙣𝙙𝙚𝙧 𝙣𝙚𝙬 𝙧𝙚𝙘𝙞𝙥𝙚
     recipeView.render(model.state.recipe);
+    BookMarkView.render(model.state.BookMark);
 
     // Add Success message
     AddRecipeView.renderMessage(`${model.state.recipe.title} named Recipe was successfuly created 😊`);
+
+    // Change ID url
+    window.history.pushState(null,'',`#${model.state.recipe.id}`);
 
     // close form window
     setTimeout(function(){

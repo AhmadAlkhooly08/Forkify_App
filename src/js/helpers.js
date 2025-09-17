@@ -7,37 +7,41 @@ const timeout = function(s){
     })
 }
 
-export const getJson = async function (lnk) {
-    try{
-        const res = await Promise.race([fetch(lnk),timeout(confing.TIMEOUT_SEC)]);
-        const data = await res.json();
+// export const getJson = async function (lnk) {
+//     try{
+//         const res = await Promise.race([fetch(lnk),timeout(confing.TIMEOUT_SEC)]);
+//         const data = await res.json();
             
-        if(!res.ok) throw new Error(`${data.message} (${res.status})`);
+//         if(!res.ok) throw new Error(`${data.message} (${res.status})`);
 
-        return data;
-    }catch(err){
-        throw err;
-    }
-}
+//         return data;
+//     }catch(err){
+//         throw err;
+//     }
+// }
+const sendJson = function (uploadData) {
+  return {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // ✅ correct casing
+    },
+    body: JSON.stringify(uploadData), // ✅ data passed in
+  };
+};
 
-export const sendJson = async function (lnk,uploadData) {
-    try{
-        const fetchPro = fetch(lnk,{
-            method: 'POST',
-            headers:{
-                'Content-Type' : 'Application/json'
-            },
-            body: JSON.stringify(uploadData)
-        });
-        
-        const res = await Promise.race([fetchPro,timeout(confing.TIMEOUT_SEC)]);
-        const data = await res.json();
-            
-        if(!res.ok) throw new Error(`${data.message} (${res.status})`);
+export const AJAX = async function (lnk, uploadData = undefined) {
+  try {
+    const fetchPro = uploadData
+      ? fetch(lnk, sendJson(uploadData)) // ✅ pass data
+      : fetch(lnk);
 
-        return data;
-    }catch(err){
-        throw err;
-    }
-}
+    const res = await Promise.race([fetchPro, timeout(confing.TIMEOUT_SEC)]);
+    const data = await res.json();
 
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};

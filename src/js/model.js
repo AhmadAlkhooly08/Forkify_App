@@ -1,6 +1,6 @@
 import { async } from "regenerator-runtime";
 import * as config from "./confing.js";
-import { getJson , sendJson} from "./helpers.js";
+import { AJAX} from "./helpers.js";
 import { locale } from "core-js";
 import BookMarkView from "./views/BookMarkView.js";
 // import { search } from "core-js/fn/symbol";
@@ -31,7 +31,7 @@ const UpdateRecipe = function(data){
 }
 export const loadRecipe = async function (id) {
   try {
-    const data = await getJson(`${config.API_URL}${id}`);
+    const data = await AJAX(`${config.API_URL}${id}?key=${config.KEY}`);
 
     state.recipe = UpdateRecipe(data);
 
@@ -49,7 +49,7 @@ export const loadRecipe = async function (id) {
 export const loadSearchedResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await getJson(`${config.API_URL}?search=${query}`);
+    const data = await AJAX(`${config.API_URL}?search=${query}&key=${config.KEY}`);
 
     const { recipes } = data.data;
     state.search.results = recipes.map((rec) => {
@@ -58,6 +58,7 @@ export const loadSearchedResults = async function (query) {
         title: rec.title,
         publisher: rec.publisher,
         img: rec.image_url,
+        ...(rec.key && {key: rec.key})
       };
     });
   } catch (err) {
@@ -120,7 +121,7 @@ export const uploadRecipe = async function (newRecipe) {
     const ingredients = Object.entries(newRecipe).filter(
       (entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
       .map(ing =>{
-        const ingArr = ing[1].replaceAll(' ','').split(',');
+        const ingArr = ing[1].split(',').map(el => el.trim());
 
         if(ingArr.length !== 3) throw new Error('Wrong ingrediant Format! Please use the correct format :)');
 
@@ -138,7 +139,7 @@ export const uploadRecipe = async function (newRecipe) {
       ingredients,
     }
 
-    const recipeData = await sendJson(`${config.API_URL}?key=${config.KEY}`,recipe);
+    const recipeData = await AJAX(`${config.API_URL}?key=${config.KEY}`,recipe);
 
     state.recipe = UpdateRecipe(recipeData); 
     console.log(state.recipe);

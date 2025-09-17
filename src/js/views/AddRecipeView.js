@@ -19,6 +19,7 @@ class AddRecipeView extends View {
     this._window.classList.toggle('hidden');
     this._overlay.classList.toggle('hidden');
   }
+
   addHandlerUpload(handler){
     this._parentEl.addEventListener('submit',function(e){
       e.preventDefault();

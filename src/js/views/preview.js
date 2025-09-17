@@ -1,4 +1,6 @@
 import View from "./View.js";
+import icons from 'url:../../img/icons.svg'
+
 class Preview extends View{
     _generateMarkup(){
         const id = window.location.hash.slice(1);
@@ -11,8 +13,12 @@ class Preview extends View{
                 <div class="preview__data">
                     <h4 class="preview__title">${this._data.title}</h4>
                     <p class="preview__publisher">${this._data.publisher}</p>
+                    <div class="preview__user-generated ${this._data.key ? '' : 'hidden'}">
+                        ${this._data.key ? `<svg><use href="${icons}.svg#icon-user"></use></svg>` : ''}
+                    </div>
                 </div>
                 </a>
+                
             </li>
         `
     }
