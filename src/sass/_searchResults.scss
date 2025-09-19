@@ -14,7 +14,7 @@
   padding: 0 3.5rem;
 
   &::after {
-    content: '';
+    content: "";
     display: table;
     clear: both;
   }
@@ -39,4 +39,11 @@
   .twitter-link:visited {
     color: $color-grey-dark-2;
   }
+}
+
+.btn-cur-Page {
+  font-size: 10px;
+  margin: auto;
+  color: #333a;
+  align-items: center;
 }

@@ -22,20 +22,19 @@ class paginationView extends View{
 
         // Page 1 and other pagees
         if(curPage === 1 && numPages > 1){
-            return this.nextBtn(curPage)
+            return this.nextBtn(curPage)  + this.middleBtn(curPage,numPages)
         }
 
         // Last page
         if(curPage === numPages && numPages > 1){
-            return this.prevBtn(curPage)
+            return this.prevBtn(curPage) + this.middleBtn(curPage,numPages)
         }
 
         // other Page
         if(curPage < numPages && curPage > 1){
 
-           return this.prevBtn(curPage) + this.nextBtn(curPage)
+           return this.prevBtn(curPage) + this.nextBtn(curPage) + this.middleBtn(curPage,numPages)
         }
-
         
         // Page 1 and No other pagees
         return '';
@@ -47,6 +46,15 @@ class paginationView extends View{
                 <svg class="search__icon">
                     <use href="${icons}#icon-arrow-right"></use>
                 </svg>
+            </button>
+
+        `
+    }
+
+    middleBtn(curPage,numPages){
+        return`
+            <button class="btn--inline btn-cur-Page">
+                <span>Page ${curPage} of ${numPages}</span>
             </button>
 
         `

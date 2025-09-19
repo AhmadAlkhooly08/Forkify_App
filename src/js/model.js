@@ -138,7 +138,7 @@ export const uploadRecipe = async function (newRecipe) {
       servings: +newRecipe.servings,
       ingredients,
     }
-
+    console.log(JSON.stringify(recipe, null, 2));
     const recipeData = await AJAX(`${config.API_URL}?key=${config.KEY}`,recipe);
 
     state.recipe = UpdateRecipe(recipeData); 
