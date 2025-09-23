@@ -32,7 +32,7 @@ const sendJson = function (uploadData) {
 export const AJAX = async function (lnk, uploadData = undefined) {
   try {
     const fetchPro = uploadData
-      ? fetch(lnk, sendJson(uploadData)) // ✅ pass data
+      ? fetch(lnk, sendJson(uploadData))
       : fetch(lnk);
 
     const res = await Promise.race([fetchPro, timeout(confing.TIMEOUT_SEC)]);

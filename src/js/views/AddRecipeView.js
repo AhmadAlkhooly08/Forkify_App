@@ -22,7 +22,7 @@ class AddRecipeView extends View {
   ToggleWindowReOpen(){
     this._window.classList.toggle('hidden');
     this._overlay.classList.toggle('hidden');
-
+    this.ReOpenForm();
   }
 
   addHandlerUpload(handler){
