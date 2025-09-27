@@ -1,12 +1,21 @@
 // @flow strict-local
 
-import type {ModuleRequest} from './types';
-import type {FilePath} from '@parcel/types';
+import type {FilePath, ModuleRequest} from '@parcel/types';
 import type {FileSystem} from '@parcel/fs';
 
 import invariant from 'assert';
 import ThrowableDiagnostic from '@parcel/diagnostic';
 import {resolveConfig} from '@parcel/utils';
+import {exec as _exec} from 'child_process';
+import {promisify} from 'util';
+
+export const exec: (
+  command: string,
+  options?: child_process$execOpts,
+) => Promise<{|stdout: string | Buffer, stderr: string | Buffer|}> = _exec
+  ? promisify(_exec)
+  : // _exec is undefined in browser builds
+    _exec;
 
 export function npmSpecifierFromModuleRequest(
   moduleRequest: ModuleRequest,
@@ -32,8 +41,9 @@ export async function getConflictingLocalDependencies(
   fs: FileSystem,
   name: string,
   local: FilePath,
+  projectRoot: FilePath,
 ): Promise<?{|json: string, filePath: FilePath, fields: Array<string>|}> {
-  let pkgPath = await resolveConfig(fs, local, ['package.json']);
+  let pkgPath = await resolveConfig(fs, local, ['package.json'], projectRoot);
   if (pkgPath == null) {
     return;
   }
@@ -43,9 +53,9 @@ export async function getConflictingLocalDependencies(
   try {
     pkg = JSON.parse(pkgStr);
   } catch (e) {
+    // TODO: codeframe
     throw new ThrowableDiagnostic({
       diagnostic: {
-        filePath: pkgPath,
         message: 'Failed to parse package.json',
         origin: '@parcel/package-manager',
       },
@@ -53,9 +63,9 @@ export async function getConflictingLocalDependencies(
   }
 
   if (typeof pkg !== 'object' || pkg == null) {
+    // TODO: codeframe
     throw new ThrowableDiagnostic({
       diagnostic: {
-        filePath: pkgPath,
         message: 'Expected package.json contents to be an object.',
         origin: '@parcel/package-manager',
       },

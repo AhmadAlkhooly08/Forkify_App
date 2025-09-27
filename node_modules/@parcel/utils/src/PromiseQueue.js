@@ -10,8 +10,10 @@ export default class PromiseQueue<T> {
   _numRunning: number = 0;
   _queue: Array<() => Promise<void>> = [];
   _runPromise: ?Promise<Array<T>> = null;
+  _error: mixed;
   _count: number = 0;
   _results: Array<T> = [];
+  _addSubscriptions: Set<() => void> = new Set();
 
   constructor(opts: PromiseQueueOpts = {maxConcurrent: Infinity}) {
     if (opts.maxConcurrent <= 0) {
@@ -42,10 +44,22 @@ export default class PromiseQueue<T> {
 
       this._queue.push(wrapped);
 
+      for (const addFn of this._addSubscriptions) {
+        addFn();
+      }
+
       if (this._numRunning > 0 && this._numRunning < this._maxConcurrent) {
         this._next();
       }
     });
+  }
+
+  subscribeToAdd(fn: () => void): () => void {
+    this._addSubscriptions.add(fn);
+
+    return () => {
+      this._addSubscriptions.delete(fn);
+    };
   }
 
   run(): Promise<Array<T>> {
@@ -74,7 +88,7 @@ export default class PromiseQueue<T> {
     if (this._queue.length) {
       this._next();
     } else if (this._numRunning === 0) {
-      this._resolve();
+      this._done();
     }
   }
 
@@ -82,10 +96,15 @@ export default class PromiseQueue<T> {
     this._numRunning++;
     try {
       await fn();
-      this._numRunning--;
     } catch (e) {
-      this._reject(e);
-      // rejecting resets state so numRunning is reset to 0 here
+      // Only store the first error that occurs.
+      // We don't reject immediately so that any other concurrent
+      // requests have time to complete.
+      if (this._error == null) {
+        this._error = e;
+      }
+    } finally {
+      this._numRunning--;
     }
   }
 
@@ -98,17 +117,15 @@ export default class PromiseQueue<T> {
     this._deferred = null;
   }
 
-  _reject(err: mixed): void {
+  _done(): void {
     if (this._deferred != null) {
-      this._deferred.reject(err);
+      if (this._error != null) {
+        this._deferred.reject(this._error);
+      } else {
+        this._deferred.resolve(this._results);
+      }
     }
-    this._resetState();
-  }
 
-  _resolve(): void {
-    if (this._deferred != null) {
-      this._deferred.resolve(this._results);
-    }
     this._resetState();
   }
 }
